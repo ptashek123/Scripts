@@ -13,7 +13,7 @@
 ## Быстрый старт
 
 ```bash
-git clone <repo-url> Scripts
+git clone https://github.com/ptashek123/Scripts.git
 cd Scripts/k8s-export
 
 go build -o k8s-export .
