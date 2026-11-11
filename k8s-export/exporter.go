@@ -10,7 +10,6 @@ import (
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
@@ -23,7 +22,7 @@ type resourceInfo struct {
 }
 
 type Exporter struct {
-	discoveryClient discovery.DiscoveryClient
+	discoveryClient discovery.DiscoveryInterface
 	dynamicClient   dynamic.Interface
 	outputDir       string
 	namespace       string
@@ -35,7 +34,7 @@ type Exporter struct {
 }
 
 func NewExporter(
-	dc discovery.DiscoveryClient,
+	dc discovery.DiscoveryInterface,
 	dyn dynamic.Interface,
 	outputDir string,
 	namespace string,
@@ -141,7 +140,7 @@ func (e *Exporter) getNamespaces() ([]string, error) {
 }
 
 func (e *Exporter) discoverResources() ([]resourceInfo, error) {
-	lists, err := e.discoveryClient.ServerPreferredResources()
+	_, lists, err := e.discoveryClient.ServerGroupsAndResources()
 	if err != nil {
 		if discovery.IsGroupDiscoveryFailedError(err) {
 			if groups, ok := discovery.GroupDiscoveryFailedErrorGroups(err); ok {
